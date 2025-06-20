@@ -14,7 +14,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
-const LoginForm = () => {
+const Home = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [username, setUsername] = useState("");
 
@@ -454,4 +454,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default Home;
