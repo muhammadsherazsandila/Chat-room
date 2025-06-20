@@ -67,6 +67,10 @@ io.on("connection", (socket) => {
     const username = users.get(socket.id);
     if (username) {
       users.delete(socket.id);
+      messages.splice(
+        messages.findIndex((msg) => msg.userId === socket.id),
+        1
+      );
       io.emit("user-disconnected", username);
       io.emit("user-list", Array.from(users.values()));
       console.log(`❌ ${username} disconnected.`);
