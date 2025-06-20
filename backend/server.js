@@ -55,6 +55,10 @@ io.on("connection", (socket) => {
   });
 });
 
+app.get("/", (req, res) => {
+  res.send("Hello Roomify!");
+});
+
 http.listen(3001, () => {
   console.log("Server running on port 3001");
 });
