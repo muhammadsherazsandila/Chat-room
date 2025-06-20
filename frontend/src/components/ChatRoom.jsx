@@ -7,7 +7,7 @@ import { FiSend, FiSmile, FiX } from "react-icons/fi";
 import Picker from "emoji-picker-react";
 import { UserList } from "./UserList.jsx";
 import { Message } from "./Message.jsx";
-const socket = io("http://localhost:3001");
+const socket = io("https://roomify.up.railway.app/");
 
 export default function ChatRoom() {
   const [messages, setMessages] = useState([]);
