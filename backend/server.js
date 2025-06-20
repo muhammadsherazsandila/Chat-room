@@ -74,6 +74,11 @@ io.on("connection", (socket) => {
   });
 });
 
+io.on("disconnect", () => {
+  users.clear();
+  messages.length = 0;
+});
+
 // Health check route
 app.get("/", (req, res) => {
   res.send("✅ Roomify Chat server is running!");
