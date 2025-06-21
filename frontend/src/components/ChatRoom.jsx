@@ -7,8 +7,6 @@ import { UserList } from "./UserList.jsx";
 import { Message } from "./Message.jsx";
 
 import useSound from "use-sound";
-import msgSent from "../assets/sounds/msgSent.mp3";
-import msgReceived from "../assets/sounds/msgReceived.mp3";
 
 const socket = io("https://roomify.up.railway.app", {
   transports: ["websocket"],
@@ -23,9 +21,12 @@ export default function ChatRoom() {
   const messagesEndRef = useRef(null);
   const username = localStorage.getItem("username") || "Anonymous";
 
-  const [playToMsgSent] = useSound(msgSent, { volume: 1, interrupt: true });
+  const [playToMsgSent] = useSound("../assets/sounds/msgSent.mp3", {
+    volume: 1,
+    interrupt: true,
+  });
 
-  const [playToMsgReceived] = useSound(msgReceived, {
+  const [playToMsgReceived] = useSound("../assets/sounds/msgReceived.mp3", {
     volume: 1,
     interrupt: true,
   });
