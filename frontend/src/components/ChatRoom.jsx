@@ -21,12 +21,12 @@ export default function ChatRoom() {
   const messagesEndRef = useRef(null);
   const username = localStorage.getItem("username") || "Anonymous";
 
-  const [playToMsgSent] = useSound("../assets/sounds/msgSent.mp3", {
+  const [playToMsgSent] = useSound("/sounds/msgSent.mp3", {
     volume: 1,
     interrupt: true,
   });
 
-  const [playToMsgReceived] = useSound("../assets/sounds/msgReceived.mp3", {
+  const [playToMsgReceived] = useSound("/sounds/msgReceived.mp3", {
     volume: 1,
     interrupt: true,
   });
@@ -63,7 +63,7 @@ export default function ChatRoom() {
     });
 
     socket.on("new-message", (message) => {
-      console.log(message);
+      console.log(message, username);
       setMessages((prev) => [...prev, message]);
       if (message.sender.username !== username) playToMsgReceived();
     });
