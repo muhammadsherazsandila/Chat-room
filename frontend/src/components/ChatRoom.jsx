@@ -63,7 +63,7 @@ export default function ChatRoom() {
 
     socket.on("new-message", (message) => {
       setMessages((prev) => [...prev, message]);
-      playToMsgReceived();
+      if (message.sender !== username) playToMsgReceived();
     });
 
     socket.on("user-list", (userList) => {
