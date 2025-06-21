@@ -66,6 +66,7 @@ const Home = () => {
     }
     if (password.length < 8) {
       toast.error("Password must be at least 6 characters long");
+      return;
     }
 
     await axios
