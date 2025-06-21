@@ -2,12 +2,16 @@ import { Server } from "socket.io";
 import { UserModel } from "../models/UserModel.js";
 import { MessageModel } from "../models/MessagesModel.js";
 export const socketHandler = (server) => {
-  const io = new Server(server, {
-    cors: {
-      origin: "https://roomifychat.vercel.app",
-      methods: ["GET", "POST"],
+  const io = new Server(
+    server,
+    {
+      cors: {
+        origin: "https://roomifychat.vercel.app",
+        methods: ["GET", "POST"],
+      },
     },
-  });
+    { transports: ["websocket"] }
+  );
   io.on("connection", async (socket) => {
     socket.on("join", async (username) => {
       if (!username) return;

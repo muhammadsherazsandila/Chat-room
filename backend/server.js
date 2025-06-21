@@ -11,7 +11,18 @@ app.use(cors());
 app.use(express.json());
 
 connectDB();
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "https://roomifychat.vercel.app");
+  res.header("Access-Control-Allow-Methods", "GET, POST");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  res.header("Access-Control-Allow-Credentials", "true");
 
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(204);
+  }
+
+  next();
+});
 app.use("/user", userRouter);
 
 app.get("/", (req, res) => {
