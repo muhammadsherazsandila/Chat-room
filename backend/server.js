@@ -8,8 +8,12 @@ import { userRouter } from "./routes/userRouter.js";
 const app = express();
 export const server = http.createServer(app);
 socketHandler(server);
-
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://roomifychat.vercel.app",
+    methods: ["GET", "POST"],
+  })
+);
 app.use(express.json());
 
 connectDB();
