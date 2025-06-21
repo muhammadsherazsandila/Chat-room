@@ -1,13 +1,13 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import io from "socket.io-client";
 import toast from "react-hot-toast";
-import { format } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiSend, FiSmile, FiX } from "react-icons/fi";
-import Picker from "emoji-picker-react";
 import { UserList } from "./UserList.jsx";
 import { Message } from "./Message.jsx";
-const socket = io("https://roomify.up.railway.app");
+const socket = io("https://roomify.up.railway.app", {
+  transports: ["websocket"],
+});
 
 export default function ChatRoom() {
   const [messages, setMessages] = useState([]);
