@@ -4,7 +4,7 @@ import { MessageModel } from "../models/MessagesModel.js";
 export const socketHandler = (server) => {
   const io = new Server(server, {
     cors: {
-      origin: "https://roomifychat.vercel.app/",
+      origin: "https://roomifychat.vercel.app",
       methods: ["GET", "POST"],
     },
   });
