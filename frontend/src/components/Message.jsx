@@ -41,7 +41,7 @@ export const Message = ({
         )}
 
         <div
-          className={`relative rounded-2xl px-4 py-3 shadow-md transition-all bg-gray-800 text-gray-200 rounded-bl-sm`}
+          className={`relative rounded-2x p-2 shadow-md transition-all bg-gray-800 text-gray-200 rounded-bl-lg rounded-tr-lg`}
         >
           {message.replyTo && (
             <div
@@ -58,7 +58,7 @@ export const Message = ({
             </div>
           )}
 
-          <p className="text-sm break-words mb-1">{message.text}</p>
+          <p className="text-sm break-words mb-2">{message.text}</p>
 
           <div
             className={`absolute right-2 text-[10px]  w-full max-w-2xl text-right bottom-1`}

@@ -127,22 +127,22 @@ export default function ChatRoom() {
         {/* Main Chat Area */}
         <div className="flex flex-col flex-1">
           {/* Mobile Header */}
-          <div className="md:hidden bg-white p-4 shadow flex items-center justify-between">
+          <div className="md:hidden bg-transparent shadow-md text-gray-200 p-4  flex items-center justify-between">
             <div className="flex items-center">
               <div className="w-10 h-10 rounded-full bg-gradient-to-r from-gray-900 to-blue-900 flex items-center justify-center mr-3">
-                <span className="text-white font-bold">
+                <span className="font-bold">
                   {username.charAt(0).toUpperCase()}
                 </span>
               </div>
-              <h1 className="text-xl font-bold text-gray-800">Roomify Chat</h1>
+              <h1 className="text-xl font-bold">Roomify</h1>
             </div>
-            <div className="text-sm bg-cyan-100 text-cyan-800 px-3 py-1 rounded-full">
+            <div className="text-sm bg-gradient-to-br from-gray-900 to-blue-900 px-3 py-1 rounded-full">
               {onlineUsers.length} online
             </div>
           </div>
 
           {/* Messages Container */}
-          <div className="flex-1 overflow-y-auto p-4 md:p-6">
+          <div className="flex-1 overflow-y-auto py-4 sm:p-4 md:p-6">
             <AnimatePresence>
               {messages.map((msg) => (
                 <Message
@@ -160,10 +160,10 @@ export default function ChatRoom() {
           </div>
 
           {/* Input Area */}
-          <div className="p-4 shadow-md relative bg-gradient-to-br from-gray-900 to-gray-950 text-white">
+          <div className="p-4 shadow-md relative bg-gradient-to-br from-gray-900 to-gray-950 text-gray-200">
             {/* Reply Preview */}
             {replyingTo && (
-              <div className="flex items-center justify-between mb-3 bg-cyan-50 p-3 rounded-lg">
+              <div className="flex items-center justify-between mb-3 bg-transparent p-3 rounded-lg">
                 <div className="flex-1">
                   <p className="text-xs font-medium text-cyan-700">
                     Replying to:
