@@ -59,7 +59,7 @@ export default function ChatRoom() {
 
     socket.on("new-message", (message) => {
       setMessages((prev) => [...prev, message]);
-      palyToMsgReceived();
+      playToMsgReceived();
     });
 
     socket.on("user-list", (userList) => {
