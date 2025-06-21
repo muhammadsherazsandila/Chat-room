@@ -7,7 +7,6 @@ import { userRouter } from "./routes/userRouter.js";
 
 const app = express();
 export const server = http.createServer(app);
-socketHandler(server);
 app.use(
   cors({
     origin: "https://roomifychat.vercel.app",
@@ -23,6 +22,7 @@ app.use("/user", userRouter);
 app.get("/", (req, res) => {
   res.send("✅ Roomify Chat server is running!");
 });
+socketHandler(server);
 
 server.listen(3001, () => {
   console.log("✅ Roomify Chat server is running on port 3001");
