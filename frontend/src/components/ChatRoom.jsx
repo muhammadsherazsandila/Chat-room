@@ -5,6 +5,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FiSend, FiSmile, FiX } from "react-icons/fi";
 import { UserList } from "./UserList.jsx";
 import { Message } from "./Message.jsx";
+
+import useSound from "use-sound";
+import msgSent from "../assets/sounds/msgSent.mp3";
+import msgReceived from "../assets/sounds/msgReceived.mp3";
+
 const socket = io("https://roomify.up.railway.app", {
   transports: ["websocket"],
 });
@@ -18,6 +23,8 @@ export default function ChatRoom() {
   const messagesEndRef = useRef(null);
   const username = localStorage.getItem("username") || "Anonymous";
 
+  const [palyToMsgSent] = useSound(msgSent);
+  const [playToMsgReceived] = useSound(msgReceived);
   // Initialize socket connection
   useEffect(() => {
     if (!username) return;
@@ -52,6 +59,7 @@ export default function ChatRoom() {
 
     socket.on("new-message", (message) => {
       setMessages((prev) => [...prev, message]);
+      palyToMsgReceived();
     });
 
     socket.on("user-list", (userList) => {
@@ -85,6 +93,7 @@ export default function ChatRoom() {
       });
       setMessageInput("");
       setReplyingTo(null);
+      palyToMsgSent();
     } else {
       toast.error("Please enter a message");
     }
