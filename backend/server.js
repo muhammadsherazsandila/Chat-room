@@ -22,6 +22,7 @@ app.use("/user", userRouter);
 app.get("/", (req, res) => {
   res.send("✅ Roomify Chat server is running!");
 });
+
 socketHandler(server);
 
 server.listen(3001, () => {
