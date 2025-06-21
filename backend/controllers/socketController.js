@@ -6,7 +6,7 @@ export const socketHandler = (server) => {
     server,
     {
       cors: {
-        origin: "https://roomifychat.vercel.app",
+        origin: ["https://roomifychat.vercel.app", "http://localhost:5173"],
         methods: ["GET", "POST"],
       },
     },
