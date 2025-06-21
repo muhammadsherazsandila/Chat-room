@@ -31,12 +31,12 @@ const Home = () => {
       setIsLoading(false);
       return;
     }
-    // if(password.length < 8){
-    //   toast.error("Password must be at least 6 characters long");
-    // }
+    if (password.length < 8) {
+      toast.error("Password must be at least 6 characters long");
+    }
 
     axios
-      .post("http://localhost:3001/user/join-chat", {
+      .post("https://roomify.up.railway.app/user/join-chat", {
         username,
         password,
       })
@@ -64,12 +64,12 @@ const Home = () => {
       toast.error("Please enter username and password");
       return;
     }
-    // if(password.length < 8){
-    //   toast.error("Password must be at least 6 characters long");
-    // }
+    if (password.length < 8) {
+      toast.error("Password must be at least 6 characters long");
+    }
 
     await axios
-      .post("http://localhost:3001/user/register", {
+      .post("https://roomify.up.railway.app/user/register", {
         username,
         password,
       })
