@@ -31,6 +31,6 @@ app.get("/", (req, res) => {
 
 socketHandler(server);
 
-server.listen(3001, () => {
+server.listen(process.env.PORT || 3001, () => {
   console.log("✅ Roomify Chat server is running on port 3001");
 });
