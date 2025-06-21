@@ -1,7 +1,7 @@
 import { useState } from "react";
-import Avatar from "@mui/material/Avatar";
 import { format } from "date-fns";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
+import { useEffect } from "react";
 
 export const Message = ({
   message,
@@ -9,90 +9,63 @@ export const Message = ({
   isCurrentUser,
   replyToMessage,
 }) => {
-  const [showReplyHint, setShowReplyHint] = useState(false);
+  const getInitial = (name) => (name ? name.charAt(0).toUpperCase() : "");
 
-  const getInitial = (name) => {
-    return name ? name.charAt(0).toUpperCase() : "";
-  };
+  const formattedDate = format(new Date(message.createdAt), "hh:mm a");
 
-  const formattedDate = format(new Date(message.timestamp), "HH:mm");
-  let hours = formattedDate.split(":")[0];
-  let minutes = formattedDate.split(":")[1];
-  hours = parseInt(hours);
-  minutes = parseInt(minutes);
-  const amPm = hours >= 12 ? "PM" : "AM";
-  hours = hours > 12 ? hours - 12 : hours;
   return (
     <motion.div
-      className={`flex mb-4 ${isCurrentUser ? "justify-end" : "justify-start"}`}
+      className={`flex mb-3 px-4 z-50 ${
+        isCurrentUser ? "justify-end" : "justify-start"
+      }`}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      onDoubleClick={() => onReply(message)}
-      onMouseEnter={() => setShowReplyHint(true)}
-      onMouseLeave={() => setShowReplyHint(false)}
+      transition={{ duration: 0.25 }}
+      onDoubleClick={() => onReply(message._id)}
     >
       {!isCurrentUser && (
-        <div className="mr-2 self-end">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 flex items-center justify-center">
-            <span className="text-white font-bold">
-              {getInitial(message.username)}
+        <div className="mr-2">
+          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-gray-900 to-blue-900 flex items-center justify-center shadow-md">
+            <span className="text-white font-semibold text-sm">
+              {getInitial(message.sender.username)}
             </span>
           </div>
         </div>
       )}
 
-      <div className="max-w-xs md:max-w-md">
+      <div className="max-w-[75%] ">
         {!isCurrentUser && (
-          <div className="text-sm font-medium text-cyan-600 mb-1">
-            {message.username}
+          <div className="text-xs font-semibold text-gray-400 mb-1 px-1">
+            {message.sender.username}
           </div>
         )}
 
         <div
-          className={`p-4 rounded-2xl ${
-            isCurrentUser
-              ? "bg-gradient-to-r from-cyan-600 to-blue-600 text-white rounded-br-none"
-              : "bg-gray-100 text-gray-800 rounded-bl-none"
-          }`}
+          className={`relative rounded-2xl px-4 py-3 shadow-md transition-all bg-gray-800 text-gray-200 rounded-bl-sm`}
         >
-          {message.replyTo && replyToMessage && (
+          {message.replyTo && (
             <div
-              className={`mb-2 p-2 rounded-lg border-l-4 ${
-                isCurrentUser
-                  ? "border-cyan-300 bg-cyan-500/20"
-                  : "border-gray-400 bg-gray-200"
+              className={`mb-2 px-3 py-2 rounded-xl text-sm truncate border-l-4 ${
+                isCurrentUser ? " border-blue-900" : " border-gray-400"
               }`}
             >
-              <p className="text-xs font-medium truncate">
-                {replyToMessage.username}
+              <p className="text-xs font-bold truncate text-gray-200">
+                Replying to
               </p>
-              <p className="text-xs truncate">{replyToMessage.text}</p>
+              <p className="text-xs truncate text-gray-200">
+                {message.replyTo}
+              </p>
             </div>
           )}
 
-          <p>{message.text}</p>
+          <p className="text-sm break-words mb-1">{message.text}</p>
 
-          <div className="flex justify-end mt-2">
-            <span className="text-xs opacity-80">
-              {hours + ":" + minutes + " " + amPm}
-            </span>
+          <div
+            className={`absolute right-2 text-[10px]  w-full max-w-2xl text-right bottom-1`}
+          >
+            {formattedDate}
           </div>
         </div>
-
-        {showReplyHint && (
-          <motion.div
-            className={`text-xs mt-1 px-2 py-1 rounded-full ${
-              isCurrentUser
-                ? "bg-cyan-100 text-cyan-800"
-                : "bg-gray-200 text-gray-800"
-            }`}
-            initial={{ opacity: 0, y: 5 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            Double click to reply
-          </motion.div>
-        )}
       </div>
     </motion.div>
   );

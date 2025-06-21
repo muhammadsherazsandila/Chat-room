@@ -11,23 +11,82 @@ import {
   FaRegSmile,
 } from "react-icons/fa";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import toast from "react-hot-toast";
-
+import { useNavigate } from "react-router-dom";
 const Home = () => {
+  const [activeTab, setActiveTab] = useState("join");
   const [isLoading, setIsLoading] = useState(false);
   const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
 
-  const handleJoin = () => {
+  const handleJoin = (e) => {
+    e.preventDefault();
     setIsLoading(true);
 
-    setTimeout(() => {
-      localStorage.setItem("username", username);
+    if (!username || !password) {
+      toast.error("Please enter username and password");
       setIsLoading(false);
-      navigate("/chat");
-    }, 1500);
+      return;
+    }
+    // if(password.length < 8){
+    //   toast.error("Password must be at least 6 characters long");
+    // }
+
+    axios
+      .post("http://localhost:3001/user/join-chat", {
+        username,
+        password,
+      })
+      .then((res) => {
+        if (res.data.status === "success") {
+          setIsLoading(false);
+          localStorage.setItem("username", username);
+          navigate("/chat");
+        } else {
+          toast.error(res.data.message);
+          setIsLoading(false);
+        }
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message);
+        setIsLoading(false);
+      });
+  };
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    if (!username || !password) {
+      toast.error("Please enter username and password");
+      return;
+    }
+    // if(password.length < 8){
+    //   toast.error("Password must be at least 6 characters long");
+    // }
+
+    await axios
+      .post("http://localhost:3001/user/register", {
+        username,
+        password,
+      })
+      .then((res) => {
+        if (res.data.status === "success") {
+          setIsLoading(false);
+          localStorage.setItem("username", username);
+          navigate("/chat");
+        } else {
+          toast.error(res.data.message);
+          setIsLoading(false);
+        }
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message);
+        setIsLoading(false);
+      });
   };
 
   // Animation variants
@@ -61,7 +120,7 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-950 text-white overflow-hidden">
+    <div className=" bg-gradient-to-br from-gray-900 to-gray-950 text-white overflow-hidden">
       {/* Floating particles */}
       <div className="absolute inset-0 overflow-hidden z-0">
         {[...Array(15)].map((_, i) => (
@@ -86,53 +145,6 @@ const Home = () => {
           />
         ))}
       </div>
-
-      {/* Header */}
-      <motion.header
-        className="py-6 px-4 sm:px-8 flex justify-between items-center relative z-10"
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <motion.div
-          className="flex items-center space-x-3"
-          whileHover={{ scale: 1.05 }}
-        >
-          <motion.div
-            animate={{ rotate: [0, 10, -10, 0] }}
-            transition={{ repeat: Infinity, duration: 4 }}
-          >
-            <FaComments className="text-3xl text-cyan-400" />
-          </motion.div>
-          <motion.h1
-            className="text-2xl font-bold"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-          >
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500">
-              ROOMIFY
-            </span>
-          </motion.h1>
-        </motion.div>
-
-        <nav>
-          <ul className="flex space-x-6">
-            {["Features", "About", "Contact"].map((item, index) => (
-              <motion.li
-                key={index}
-                className="hover:text-cyan-300 cursor-pointer font-medium"
-                variants={itemVariants}
-                initial="hidden"
-                animate="visible"
-                transition={{ delay: 0.3 + index * 0.1 }}
-              >
-                {item}
-              </motion.li>
-            ))}
-          </ul>
-        </nav>
-      </motion.header>
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-12 flex flex-col items-center relative z-10">
@@ -219,59 +231,133 @@ const Home = () => {
 
           {/* Tabs */}
           <div className="flex mb-8 border-b border-gray-700">
-            <button className={`flex-1 py-3 font-medium relative`}>
-              Join Chat
-            </button>
+            {["join", "Register"].map((tab) => (
+              <button
+                key={tab}
+                className={`flex-1 py-3 font-medium relative ${
+                  activeTab === tab
+                    ? "text-cyan-400"
+                    : "text-gray-400 hover:text-gray-200"
+                }`}
+                onClick={() => setActiveTab(tab)}
+              >
+                {tab === "join" ? "Join Chat" : "Register"}
+                {activeTab === tab && (
+                  <motion.div
+                    className="absolute bottom-0 left-0 w-full h-0.5 bg-cyan-500"
+                    layoutId="tabIndicator"
+                  />
+                )}
+              </button>
+            ))}
           </div>
 
           {/* Join Chat Form */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
-          >
-            <div className="mb-6">
-              <label className="block text-gray-300 mb-2">User Name</label>
-              <motion.input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="w-full bg-gray-700/50 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-cyan-500 border border-gray-600"
-                placeholder="Enter your chat name"
-                whileFocus={{ scale: 1.01 }}
-              />
-            </div>
-            <motion.button
-              onClick={handleJoin}
-              disabled={isLoading}
-              className={`w-full py-3 rounded-xl font-medium flex justify-center items-center ${
-                isLoading
-                  ? "bg-gray-600 cursor-not-allowed"
-                  : "bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700"
-              }`}
-              whileHover={!isLoading ? { scale: 1.02 } : {}}
-              whileTap={!isLoading ? { scale: 0.98 } : {}}
+          {activeTab === "join" && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
             >
-              {isLoading ? (
-                <div className="flex items-center">
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{
-                      duration: 1,
-                      repeat: Infinity,
-                      ease: "linear",
-                    }}
-                    className="h-5 w-5 border-2 border-white border-t-transparent rounded-full mr-2"
-                  />
-                  Joining...
-                </div>
-              ) : (
-                <div className="flex items-center">
-                  <FaRocket className="mr-2" /> Join Chat Room
-                </div>
-              )}
-            </motion.button>
-          </motion.div>
+              <div className="mb-6">
+                <label className="block text-gray-300 mb-2">Username</label>
+                <motion.input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="w-full bg-gray-700/50 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-cyan-500 border border-gray-600"
+                  placeholder="Enter username"
+                  whileFocus={{ scale: 1.01 }}
+                />
+              </div>
+              <div className="mb-8">
+                <label className="block text-gray-300 mb-2">Password</label>
+                <motion.input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full bg-gray-700/50 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-cyan-500 border border-gray-600"
+                  placeholder="••••••••"
+                  whileFocus={{ scale: 1.01 }}
+                />
+              </div>
+              <motion.button
+                onClick={(e) => handleJoin(e)}
+                disabled={isLoading}
+                className={`w-full py-3 rounded-xl font-medium flex justify-center items-center ${
+                  isLoading
+                    ? "bg-gray-600 cursor-not-allowed"
+                    : "bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700"
+                }`}
+                whileHover={!isLoading ? { scale: 1.02 } : {}}
+                whileTap={!isLoading ? { scale: 0.98 } : {}}
+              >
+                {isLoading ? (
+                  <div className="flex items-center">
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{
+                        duration: 1,
+                        repeat: Infinity,
+                        ease: "linear",
+                      }}
+                      className="h-5 w-5 border-2 border-white border-t-transparent rounded-full mr-2"
+                    />
+                    Joining...
+                  </div>
+                ) : (
+                  <div className="flex items-center">
+                    <FaRocket className="mr-2" /> Join Chat Room
+                  </div>
+                )}
+              </motion.button>
+            </motion.div>
+          )}
+
+          {/* Login Form */}
+          {activeTab === "Register" && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="mb-6">
+                <label className="block text-gray-300 mb-2">Username</label>
+                <motion.input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="w-full bg-gray-700/50 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-cyan-500 border border-gray-600"
+                  placeholder="Username"
+                  whileFocus={{ scale: 1.01 }}
+                />
+              </div>
+              <div className="mb-8">
+                <label className="block text-gray-300 mb-2">Password</label>
+                <motion.input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full bg-gray-700/50 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-cyan-500 border border-gray-600"
+                  placeholder="••••••••"
+                  whileFocus={{ scale: 1.01 }}
+                />
+              </div>
+              <motion.button
+                onClick={(e) => handleRegister(e)}
+                disabled={isLoading}
+                className={`w-full py-3 rounded-xl font-medium mb-4 ${
+                  isLoading
+                    ? "bg-gray-600 cursor-not-allowed"
+                    : "bg-gradient-to-r from-purple-600 to-indigo-700 hover:from-purple-700 hover:to-indigo-800"
+                }`}
+                whileHover={!isLoading ? { scale: 1.02 } : {}}
+                whileTap={!isLoading ? { scale: 0.98 } : {}}
+              >
+                {isLoading ? "Registering..." : "Register"}
+              </motion.button>
+            </motion.div>
+          )}
         </motion.div>
       </main>
 
@@ -424,6 +510,7 @@ const Home = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
+            onClick={() => setActiveTab("join")}
           >
             Join Roomify Now
           </motion.button>
