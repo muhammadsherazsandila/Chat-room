@@ -23,8 +23,12 @@ export default function ChatRoom() {
   const messagesEndRef = useRef(null);
   const username = localStorage.getItem("username") || "Anonymous";
 
-  const [palyToMsgSent] = useSound(msgSent);
-  const [playToMsgReceived] = useSound(msgReceived);
+  const [playToMsgSent] = useSound(msgSent, { volume: 1, interrupt: true });
+
+  const [playToMsgReceived] = useSound(msgReceived, {
+    volume: 1,
+    interrupt: true,
+  });
   // Initialize socket connection
   useEffect(() => {
     if (!username) return;
@@ -93,7 +97,7 @@ export default function ChatRoom() {
       });
       setMessageInput("");
       setReplyingTo(null);
-      palyToMsgSent();
+      playToMsgSent();
     } else {
       toast.error("Please enter a message");
     }

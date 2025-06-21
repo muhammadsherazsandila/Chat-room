@@ -33,7 +33,7 @@ export const Message = ({
         </div>
       )}
 
-      <div className="max-w-[75%] ">
+      <div className="  ">
         {!isCurrentUser && (
           <div className="text-xs font-semibold text-gray-400 mb-1 px-1">
             {message.sender.username}
@@ -60,11 +60,7 @@ export const Message = ({
 
           <p className="text-sm break-words mb-2">{message.text}</p>
 
-          <div
-            className={`absolute right-2 text-[10px]  w-full max-w-2xl text-right bottom-1`}
-          >
-            {formattedDate}
-          </div>
+          <div className="text-right text-xs w-full">{formattedDate}</div>
         </div>
       </div>
     </motion.div>
