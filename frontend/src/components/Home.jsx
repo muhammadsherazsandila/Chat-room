@@ -12,12 +12,15 @@ import { motion } from "framer-motion";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { FaEye } from "react-icons/fa6";
+import { FaEyeSlash } from "react-icons/fa6";
 
 const Home = () => {
   const [activeTab, setActiveTab] = useState("join");
   const [isLoading, setIsLoading] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
 
@@ -323,14 +326,23 @@ const Home = () => {
                 <label className="block text-gray-300 mb-1 md:mb-2 text-sm md:text-base">
                   Password
                 </label>
-                <motion.input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-gray-700/50 rounded-xl px-3 md:px-4 py-2 md:py-3 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-cyan-500 border border-gray-600"
-                  placeholder="••••••••"
-                  whileFocus={{ scale: 1.01 }}
-                />
+                <span className="relative">
+                  <motion.input
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full bg-gray-700/50 rounded-xl px-3 md:px-4 py-2 md:py-3 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-cyan-500 border border-gray-600"
+                    placeholder="••••••••"
+                    whileFocus={{ scale: 1.01 }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300"
+                  >
+                    {showPassword ? <FaEye /> : <FaEyeSlash />}
+                  </button>
+                </span>
               </div>
               <motion.button
                 onClick={(e) => handleJoin(e)}
@@ -389,14 +401,23 @@ const Home = () => {
                 <label className="block text-gray-300 mb-1 md:mb-2 text-sm md:text-base">
                   Password
                 </label>
-                <motion.input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-gray-700/50 rounded-xl px-3 md:px-4 py-2 md:py-3 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-cyan-500 border border-gray-600"
-                  placeholder="••••••••"
-                  whileFocus={{ scale: 1.01 }}
-                />
+                <span className="relative">
+                  <motion.input
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full bg-gray-700/50 rounded-xl px-3 md:px-4 py-2 md:py-3 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-cyan-500 border border-gray-600"
+                    placeholder="••••••••"
+                    whileFocus={{ scale: 1.01 }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300"
+                  >
+                    {showPassword ? <FaEye /> : <FaEyeSlash />}
+                  </button>
+                </span>
               </div>
               <motion.button
                 onClick={(e) => handleRegister(e)}

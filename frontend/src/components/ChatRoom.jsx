@@ -30,16 +30,25 @@ export default function ChatRoom() {
   const [playToMsgSent] = useSound("/sounds/msgSent.mp3", {
     volume: 1,
     interrupt: true,
+    onplay: () => {
+      console.log("playing sent sound");
+    },
   });
 
   const [playToMsgReceived] = useSound("/sounds/msgReceived.mp3", {
     volume: 1,
     interrupt: true,
+    onplay: () => {
+      console.log("playing received sound");
+    },
   });
 
   const [playToTyping] = useSound("/sounds/typing.mp3", {
     volume: 1,
     interrupt: true,
+    onplay: () => {
+      console.log("playing typing sound");
+    },
   });
   // Initialize socket connection
   useEffect(() => {
@@ -63,7 +72,7 @@ export default function ChatRoom() {
 
     socket.on("user-disconnected", (username, onlineUsers) => {
       toast.error(`${username} disconnected!`, {
-        icon: "🚪",
+        icon: "👋",
         style: {
           background: "#f87171",
           color: "#fff",
@@ -109,7 +118,7 @@ export default function ChatRoom() {
     socket.on("typing", (typer) => {
       setTyping(true);
       setTyper(typer);
-      playToTyping();
+      if (typer.username !== username) playToTyping();
     });
 
     socket.on("stop-typing", () => {
@@ -160,7 +169,6 @@ export default function ChatRoom() {
 
   const handleLeaveChat = () => {
     socket.emit("leave", username);
-    localStorage.removeItem("username");
     let newOnlineUsers = onlineUsers.filter(
       (user) => user.username !== username
     );
