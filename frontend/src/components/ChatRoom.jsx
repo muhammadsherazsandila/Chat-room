@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import io from "socket.io-client";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
@@ -7,12 +8,15 @@ import { UserList } from "./UserList.jsx";
 import { Message } from "./Message.jsx";
 
 import useSound from "use-sound";
+import { getInitial } from "../utils/formaters.js";
+import TypingIndicator from "./TypingIndicator.jsx";
 
-const socket = io("https://roomify.up.railway.app", {
+const socket = io("http://localhost:3001", {
   transports: ["websocket"],
 });
 
 export default function ChatRoom() {
+  const navigate = useNavigate();
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
   const [onlineUsers, setOnlineUsers] = useState([]);
@@ -20,6 +24,8 @@ export default function ChatRoom() {
   const [replyingTo, setReplyingTo] = useState(null);
   const messagesEndRef = useRef(null);
   const username = localStorage.getItem("username") || "Anonymous";
+  const [typing, setTyping] = useState(false);
+  const [typer, setTyper] = useState(null);
 
   const [playToMsgSent] = useSound("/sounds/msgSent.mp3", {
     volume: 1,
@@ -27,6 +33,11 @@ export default function ChatRoom() {
   });
 
   const [playToMsgReceived] = useSound("/sounds/msgReceived.mp3", {
+    volume: 1,
+    interrupt: true,
+  });
+
+  const [playToTyping] = useSound("/sounds/typing.wav", {
     volume: 1,
     interrupt: true,
   });
@@ -63,7 +74,6 @@ export default function ChatRoom() {
     });
 
     socket.on("new-message", (message) => {
-      console.log(message, username);
       setMessages((prev) => [...prev, message]);
       if (message.sender.username !== username) playToMsgReceived();
     });
@@ -75,7 +85,7 @@ export default function ChatRoom() {
     return () => {
       socket.disconnect();
     };
-  }, [username]);
+  }, [username && socket]);
 
   // Scroll to bottom when new messages arrive
   useEffect(() => {
@@ -85,6 +95,28 @@ export default function ChatRoom() {
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, []);
+
+  // Handle typing
+  const handleMessageTyping = (e) => {
+    setMessageInput(e.target.value);
+    if (messageInput.length < 1) {
+      setTyping(true);
+      socket.emit("typing", username);
+    }
+  };
+
+  useEffect(() => {
+    socket.on("typing", (typer) => {
+      setTyping(true);
+      setTyper(typer);
+      playToTyping();
+    });
+
+    socket.on("stop-typing", () => {
+      setTyping(false);
+      setTyper(null);
+    });
+  }, [socket]);
 
   // Handle sending messages
   const handleSendMessage = () => {
@@ -103,6 +135,7 @@ export default function ChatRoom() {
     } else {
       toast.error("Please enter a message");
     }
+    socket.emit("stop-typing", username);
   };
 
   // Handle keyboard shortcuts
@@ -111,12 +144,6 @@ export default function ChatRoom() {
       e.preventDefault();
       handleSendMessage();
     }
-  };
-
-  // Handle emoji selection
-  const onEmojiClick = (emojiObject) => {
-    console.log(emojiObject.emoji);
-    setMessageInput((prev) => prev + emojiObject.emoji);
   };
 
   // Find reply message
@@ -131,9 +158,25 @@ export default function ChatRoom() {
     return replyMessage;
   };
 
+  const handleLeaveChat = () => {
+    socket.emit("leave", username);
+    localStorage.removeItem("username");
+    let newOnlineUsers = onlineUsers.filter(
+      (user) => user.username !== username
+    );
+    setOnlineUsers(newOnlineUsers);
+    navigate("/");
+  };
+
   return (
     <>
       <div className="flex w-full h-screen bg-gradient-to-br overflow-y-auto from-gray-900 to-gray-950 text-white">
+        <span
+          className="hidden md:block absolute top-4 right-8 z-50 text-sm bg-gradient-to-br from-gray-900 to-blue-900 px-5 py-2  w-20 rounded-full cursor-pointer hover:scale-110 transition-all duration-200 ease-in-out hover:bg-gradient-to-tr hover:from-gray-900 hover:to-blue-900 text-center"
+          onClick={handleLeaveChat}
+        >
+          Leave
+        </span>
         {/* Sidebar - User List */}
         <div className="w-full md:w-80 bg-white p-6 shadow-lg hidden md:block bg-gradient-to-br from-gray-900 to-gray-950 text-white">
           <UserList users={onlineUsers} />
@@ -151,13 +194,22 @@ export default function ChatRoom() {
               </div>
               <h1 className="text-xl font-bold">Roomify</h1>
             </div>
-            <div className="text-sm bg-gradient-to-br from-gray-900 to-blue-900 px-3 py-1 rounded-full">
-              {onlineUsers.length} online
+            <div className="flex items-center space-x-2">
+              <span
+                className="text-sm bg-gradient-to-br from-gray-900 to-blue-900 px-5 py-2  rounded-full cursor-pointer hover:scale-110 transition-all duration-200 ease-in-out hover:bg-gradient-to-tr hover:from-gray-900 hover:to-blue-900 text-center"
+                onClick={handleLeaveChat}
+              >
+                Leave
+              </span>
+              <span className="flex justify-center items-center text-sm bg-gradient-to-br from-gray-900 to-blue-900 px-5 py-2 h-10 rounded-full ">
+                <div className="mr-2 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
+                {onlineUsers.length} online
+              </span>
             </div>
           </div>
 
           {/* Messages Container */}
-          <div className="flex-1 overflow-y-auto py-4 sm:p-4 md:p-6">
+          <div className="flex-1 overflow-y-auto py-4 sm:p-4 md:p-6 relative">
             <AnimatePresence>
               {messages.map((msg) => (
                 <Message
@@ -165,14 +217,25 @@ export default function ChatRoom() {
                   message={msg}
                   onReply={handleReply}
                   isCurrentUser={msg.sender.username === username}
-                  replyToMessage={
-                    msg.replyTo ? getReplyMessage(msg.replyTo) : null
-                  }
                 />
               ))}
               <div ref={messagesEndRef} />
             </AnimatePresence>
           </div>
+          {/* Typing Indicator */}
+          {typing && typer?.username !== username && (
+            <div className="flex items-center bg-transparent p-3 rounded-tr-lg">
+              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-gray-900 to-blue-900 flex items-center justify-center shadow-md">
+                <span className="text-white font-semibold text-sm">
+                  {getInitial(typer?.username)}
+                </span>
+              </div>
+              <div>
+                <h4 className="font-semibold ">{typer?.username}</h4>
+                <TypingIndicator />
+              </div>
+            </div>
+          )}
 
           {/* Input Area */}
           <div className="p-4 shadow-md relative bg-gradient-to-br from-gray-900 to-gray-950 text-gray-200">
@@ -203,7 +266,7 @@ export default function ChatRoom() {
                 <textarea
                   className="w-full h-12 max-h-32 border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-900 focus:border-transparent resize-none bg-transparent overflow-y-scroll scrollbar-hide"
                   value={messageInput}
-                  onChange={(e) => setMessageInput(e.target.value)}
+                  onChange={(e) => handleMessageTyping(e)}
                   onKeyPress={handleKeyPress}
                   placeholder="Type a message..."
                   rows={1}

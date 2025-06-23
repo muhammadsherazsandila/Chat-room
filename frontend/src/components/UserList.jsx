@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 export const UserList = ({ users }) => {
   return (
     <div className="h-full ">
-      <h2 className="text-xl font-bold mb-4 text-gray-400">
+      <h2 className="text-xl font-bold mb-4 text-white">
         Online Users <span className="text-gray-400">({users.length})</span>
       </h2>
       <ul className="space-y-3">

@@ -20,6 +20,21 @@ export const socketHandler = (server) => {
       user.socketId = socket.id;
       user.isOnline = true;
       await user.save();
+
+      // Count total messages
+      const count = await MessageModel.countDocuments();
+      console.log(count);
+      // If more than 50, delete oldest
+      if (count > 50) {
+        const oldest = await MessageModel.find()
+          .sort({ createdAt: 1 }) // oldest first
+          .limit(count - 50); // get extra messages beyond 50
+
+        const idsToDelete = oldest.map((msg) => msg._id);
+
+        await MessageModel.deleteMany({ _id: { $in: idsToDelete } });
+      }
+
       const users = (await UserModel.find({})) || [];
       const messages = (await MessageModel.find({}).populate("sender")) || [];
       const onlineUsers = (await UserModel.find({ isOnline: true })) || [];
@@ -38,7 +53,6 @@ export const socketHandler = (server) => {
 
     // send message
     socket.on("send-message", async (data) => {
-      console.log(data);
       const user = await UserModel.findOne({ username: data.sender });
       if (!user) return;
       const msg = await MessageModel.create({
@@ -52,6 +66,28 @@ export const socketHandler = (server) => {
         .populate("sender")
         .populate("replyTo");
       io.emit("new-message", updatedMsg);
+    });
+
+    socket.on("typing", async (username) => {
+      const user = await UserModel.findOne({ username });
+      if (!user) return;
+      io.emit("typing", user);
+    });
+
+    socket.on("stop-typing", async (username) => {
+      const user = await UserModel.findOne({ username });
+      if (!user) return;
+      io.emit("stop-typing", user);
+    });
+
+    socket.on("leave", async (username) => {
+      const user = await UserModel.findOne({ username });
+      if (!user) return;
+      user.socketId = null;
+      user.isOnline = false;
+      await user.save();
+      const onlineUsers = (await UserModel.find({ isOnline: true })) || [];
+      io.emit("user-disconnected", user.username, onlineUsers);
     });
   });
 

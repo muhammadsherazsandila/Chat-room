@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FaUserFriends,
   FaLock,
@@ -38,7 +38,7 @@ const Home = () => {
 
     axios
       .post("https://roomify.up.railway.app/user/join-chat", {
-        username,
+        username: username.trim(),
         password,
       })
       .then((res) => {
@@ -70,10 +70,15 @@ const Home = () => {
       setIsLoading(false);
       return;
     }
+    if (/[ @.#$%^&*()]/.test(username)) {
+      toast.error("Username cannot contain spaces or special characters");
+      setIsLoading(false);
+      return;
+    }
 
     await axios
       .post("https://roomify.up.railway.app/user/register", {
-        username,
+        username: username.trim(),
         password,
       })
       .then((res) => {
@@ -172,9 +177,7 @@ const Home = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
           >
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-blue-500">
-              ROOMIFY
-            </span>
+            <span className="text-white">ROOMIFY</span>
           </motion.h1>
         </motion.div>
       </motion.header>
@@ -260,6 +263,7 @@ const Home = () => {
 
         {/* Auth Card */}
         <motion.div
+          id="auth-card"
           className="w-full max-w-sm sm:max-w-md bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-2xl border border-gray-700 relative overflow-hidden"
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -516,11 +520,21 @@ const Home = () => {
               projects."
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <div className="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16" />
+              <a
+                href="https://sherazportfolio.vercel.app"
+                className=""
+                target="_blank"
+              >
+                <img
+                  src="https://res.cloudinary.com/djsj10dmo/image/upload/v1750705799/adminjpg_x164dm.jpg"
+                  alt="profile"
+                  className="object-cover object-center bg-gray-800 border-2  rounded-xl w-16 h-16"
+                />
+              </a>
               <div className="text-left">
-                <p className="font-bold">Alex Johnson</p>
+                <p className="font-bold">Muhammad Sheraz</p>
                 <p className="text-sm md:text-base text-gray-400">
-                  Product Manager, TechCorp
+                  Product Manager, Roomify
                 </p>
               </div>
             </div>
@@ -559,7 +573,8 @@ const Home = () => {
             communication with Roomify.
           </motion.p>
 
-          <motion.button
+          <motion.a
+            href="#auth-card"
             className="px-6 md:px-8 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-bold rounded-full shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50 transition-all text-sm md:text-base"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -570,7 +585,7 @@ const Home = () => {
             onClick={() => setActiveTab("join")}
           >
             Join Roomify Now
-          </motion.button>
+          </motion.a>
         </div>
       </section>
 

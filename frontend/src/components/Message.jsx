@@ -1,18 +1,9 @@
 import { useState } from "react";
-import { format } from "date-fns";
 import { motion } from "framer-motion";
 import { useEffect } from "react";
+import { formattedDate, getInitial } from "../utils/formaters";
 
-export const Message = ({
-  message,
-  onReply,
-  isCurrentUser,
-  replyToMessage,
-}) => {
-  const getInitial = (name) => (name ? name.charAt(0).toUpperCase() : "");
-
-  const formattedDate = format(new Date(message.createdAt), "hh:mm a");
-
+export const Message = ({ message, onReply, isCurrentUser }) => {
   return (
     <motion.div
       className={`flex mb-3 px-4 z-50 ${
@@ -40,27 +31,23 @@ export const Message = ({
           </div>
         )}
 
+        {message.replyTo && (
+          <div className="bg-gray-700 px-3 py-2 rounded-tl-lg rounded-tr-lg -mb-2 text-sm truncate ml-2">
+            <p className="text-xs truncate text-gray-200 mb-2">
+              {message.replyTo.length > 20
+                ? message.replyTo.slice(0, 20) + "..."
+                : message.replyTo}
+            </p>
+          </div>
+        )}
         <div
-          className={`relative rounded-2x p-2 shadow-md transition-all bg-gray-800 text-gray-200 rounded-bl-lg rounded-tr-lg`}
+          className={`relative rounded-2x p-2 shadow-md transition-all bg-gray-800 text-gray-200 rounded-lg `}
         >
-          {message.replyTo && (
-            <div
-              className={`mb-2 px-3 py-2 rounded-xl text-sm truncate border-l-4 ${
-                isCurrentUser ? " border-blue-900" : " border-gray-400"
-              }`}
-            >
-              <p className="text-xs font-bold truncate text-gray-200">
-                Replying to
-              </p>
-              <p className="text-xs truncate text-gray-200">
-                {message.replyTo}
-              </p>
-            </div>
-          )}
-
           <p className="text-sm break-words mb-2">{message.text}</p>
 
-          <div className="text-right text-xs w-full">{formattedDate}</div>
+          <div className="text-right text-xs w-full">
+            {formattedDate(message)}
+          </div>
         </div>
       </div>
     </motion.div>
