@@ -41,7 +41,7 @@ export const Message = ({ message, onReply, isCurrentUser }) => {
           </div>
         )}
         <div
-          className={`relative rounded-2x p-2 shadow-md transition-all bg-gray-800 text-gray-200 rounded-lg `}
+          className={`w-full max-w-[80%] relative rounded-2x p-2 shadow-md transition-all bg-gray-800 text-gray-200 rounded-lg `}
         >
           <p className="text-sm break-words mb-2">{message.text}</p>
 

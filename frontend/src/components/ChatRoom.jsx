@@ -58,7 +58,8 @@ export default function ChatRoom() {
 
     socket.on("user-connected", (username, data) => {
       toast.success(`${username} connected!`, {
-        icon: "👋",
+        // icon should be a checkmark
+        icon: "✅",
         style: {
           background: "#4ade80",
           color: "#fff",
@@ -72,7 +73,8 @@ export default function ChatRoom() {
 
     socket.on("user-disconnected", (username, onlineUsers) => {
       toast.error(`${username} disconnected!`, {
-        icon: "👋",
+        // icon should be a cross icon
+        icon: "❌",
         style: {
           background: "#f87171",
           color: "#fff",
