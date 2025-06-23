@@ -169,7 +169,11 @@ const Home = () => {
             animate={{ rotate: [0, 10, -10, 0] }}
             transition={{ repeat: Infinity, duration: 4 }}
           >
-            <FaComments className="text-3xl text-blue-900" />
+            <img
+              className="w-12 h-12 rounded-full "
+              src="/images/logo.jpeg"
+              alt="logo"
+            />
           </motion.div>
           <motion.h1
             className="text-2xl font-bold"

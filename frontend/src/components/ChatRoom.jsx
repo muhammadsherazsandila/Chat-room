@@ -187,11 +187,11 @@ export default function ChatRoom() {
           {/* Mobile Header */}
           <div className="w-full fixed top-0 left-0 z-50 shadow-xl md:hidden bg-transparent border-b-gray-400  text-gray-200 p-4  flex items-center justify-between">
             <div className="flex items-center">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-gray-900 to-blue-900 flex items-center justify-center mr-3">
-                <span className="font-bold">
-                  {username.charAt(0).toUpperCase()}
-                </span>
-              </div>
+              <img
+                className="w-10 h-10 rounded-full mr-2"
+                src="/images/logo.jpeg"
+                alt="logo"
+              />
               <h1 className="text-xl font-bold">Roomify</h1>
             </div>
             <div className="flex items-center space-x-2">
