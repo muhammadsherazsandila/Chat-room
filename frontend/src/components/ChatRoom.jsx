@@ -11,7 +11,7 @@ import useSound from "use-sound";
 import { getInitial } from "../utils/formaters.js";
 import TypingIndicator from "./TypingIndicator.jsx";
 
-const socket = io("http://localhost:3001", {
+const socket = io("https://roomify.up.railway.app/", {
   transports: ["websocket"],
 });
 
@@ -185,7 +185,7 @@ export default function ChatRoom() {
         {/* Main Chat Area */}
         <div className="flex flex-col flex-1">
           {/* Mobile Header */}
-          <div className="md:hidden bg-transparent shadow-md text-gray-200 p-4  flex items-center justify-between">
+          <div className="w-full fixed top-0 left-0 z-50 shadow-xl md:hidden bg-transparent border-b-gray-400  text-gray-200 p-4  flex items-center justify-between">
             <div className="flex items-center">
               <div className="w-10 h-10 rounded-full bg-gradient-to-r from-gray-900 to-blue-900 flex items-center justify-center mr-3">
                 <span className="font-bold">
