@@ -37,7 +37,7 @@ export default function ChatRoom() {
     interrupt: true,
   });
 
-  const [playToTyping] = useSound("/sounds/typing.wav", {
+  const [playToTyping] = useSound("/sounds/typing.mp3", {
     volume: 1,
     interrupt: true,
   });
