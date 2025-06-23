@@ -26,7 +26,7 @@ export default function ChatRoom() {
   const username = localStorage.getItem("username") || "Anonymous";
   const [typing, setTyping] = useState(false);
   const [typer, setTyper] = useState(null);
-
+  const [showUserList, setShowUserList] = useState(false);
   const [playToMsgSent] = useSound("/sounds/msgSent.mp3", {
     volume: 1,
     interrupt: true,
@@ -201,11 +201,23 @@ export default function ChatRoom() {
               >
                 Leave
               </span>
-              <span className="flex justify-center items-center text-sm bg-gradient-to-br from-gray-900 to-blue-900 px-5 py-2 h-10 rounded-full ">
+              <span
+                className="flex justify-center items-center text-sm bg-gradient-to-br from-gray-900 to-blue-900 px-5 py-2 h-10 rounded-full "
+                onClick={() => setShowUserList(!showUserList)}
+              >
                 <div className="mr-2 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
                 {onlineUsers.length} online
               </span>
             </div>
+          </div>
+
+          {/* Mobile User List */}
+          <div
+            className={`w-full fixed left-0 z-50 shadow-xl md:hidden bg-gradient-to-br from-gray-900 to-blue-900 p-4 transition-all duration-300 ease-in-out ${
+              showUserList ? "top-16" : "top-[-100%]"
+            }`}
+          >
+            <UserList users={onlineUsers} />
           </div>
 
           {/* Messages Container */}

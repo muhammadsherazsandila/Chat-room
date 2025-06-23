@@ -5,7 +5,7 @@ export const UserList = ({ users }) => {
   return (
     <div className="h-full ">
       <h2 className="text-xl font-bold mb-4 text-white">
-        Online Users <span className="text-gray-400">({users.length})</span>
+        Online Users <span className="text-white">({users.length})</span>
       </h2>
       <ul className="space-y-3">
         <AnimatePresence>
