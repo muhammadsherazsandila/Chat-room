@@ -32,7 +32,7 @@ export const Message = ({ message, onReply, isCurrentUser }) => {
         )}
 
         {message.replyTo && (
-          <div className="bg-gray-700 px-3 py-2 rounded-tl-lg rounded-tr-lg -mb-2 text-sm truncate ml-2">
+          <div className=" bg-gray-700 px-3 py-2 rounded-tl-lg rounded-tr-lg -mb-2 text-sm truncate ml-2">
             <p className="text-xs truncate text-gray-200 mb-2">
               {message.replyTo.length > 20
                 ? message.replyTo.slice(0, 20) + "..."
@@ -41,7 +41,7 @@ export const Message = ({ message, onReply, isCurrentUser }) => {
           </div>
         )}
         <div
-          className={`w-full max-w-[80%] relative rounded-2x p-2 shadow-md transition-all bg-gray-800 text-gray-200 rounded-lg `}
+          className={` relative rounded-2x p-2 shadow-md transition-all bg-gray-800 text-gray-200 rounded-lg `}
         >
           <p className="text-sm break-words mb-2">{message.text}</p>
 

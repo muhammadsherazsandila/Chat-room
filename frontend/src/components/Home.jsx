@@ -47,7 +47,7 @@ const Home = () => {
       .then((res) => {
         if (res.data.status === "success") {
           setIsLoading(false);
-          localStorage.setItem("username", username);
+          localStorage.setItem("username", username.trim());
           navigate("/chat");
         } else {
           toast.error(res.data.message);
@@ -87,7 +87,7 @@ const Home = () => {
       .then((res) => {
         if (res.data.status === "success") {
           setIsLoading(false);
-          localStorage.setItem("username", username);
+          localStorage.setItem("username", username.trim());
           navigate("/chat");
         } else {
           toast.error(res.data.message);
