@@ -231,7 +231,7 @@ export default function ChatRoom() {
           </div>
 
           {/* Messages Container */}
-          <div className="flex-1 overflow-y-auto py-4 sm:p-4 md:p-6 relative">
+          <div className="mt-20 sm:mt-0 flex-1 overflow-y-auto py-4 sm:p-4 md:p-6 relative">
             <AnimatePresence>
               {messages.map((msg) => (
                 <Message
