@@ -10,8 +10,9 @@ import { Message } from "./Message.jsx";
 import useSound from "use-sound";
 import { getInitial } from "../utils/formaters.js";
 import TypingIndicator from "./TypingIndicator.jsx";
+import { backendServer } from "../utils/backendServer.js";
 
-const socket = io("https://roomify.up.railway.app/", {
+const socket = io(`${backendServer}`, {
   transports: ["websocket"],
 });
 

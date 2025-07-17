@@ -40,7 +40,7 @@ const Home = () => {
     }
 
     axios
-      .post("https://roomify.up.railway.app/user/join-chat", {
+      .post(`${backendServer}user/join-chat`, {
         username: username.trim(),
         password,
       })
@@ -80,7 +80,7 @@ const Home = () => {
     }
 
     await axios
-      .post("https://roomify.up.railway.app/user/register", {
+      .post(`${backendServer}user/register`, {
         username: username.trim(),
         password,
       })
